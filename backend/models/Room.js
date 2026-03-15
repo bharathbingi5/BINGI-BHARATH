@@ -101,12 +101,6 @@ roomSchema.statics.getActiveRooms = function() {
   return this.find({ isActive: true }).sort({ price: 1 });
 };
 
-// Pre-save middleware
-roomSchema.pre('save', function(next) {
-  this.updatedAt = new Date();
-  next();
-});
-
 const Room = mongoose.model('Room', roomSchema);
 
 export default Room;
