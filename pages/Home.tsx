@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Crown, Star, ShieldCheck, Zap, Users, Music, Sparkles } from 'lucide-react';
+import { Crown, Star, ShieldCheck, Zap, Users, Music, Sparkles, Phone } from 'lucide-react';
 import Carousel from '../components/Carousel';
 import { Room } from '../types';
 import { roomService } from '../src/services';
@@ -273,6 +273,61 @@ const Home: React.FC = () => {
               <p className="text-gray-400 font-light leading-relaxed">{item.desc}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* Help Desk / Contact Support Section */}
+      <section id="contact" className="py-16 px-6 bg-black/10 border-t border-[#d4af37]/10">
+        <div className="max-w-3xl mx-auto text-center">
+          <div className="glass-card p-8 md:p-12 rounded-3xl border-[#d4af37]/30 royal-shadow relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#d4af37] opacity-5 -translate-y-1/2 translate-x-1/2 rounded-full blur-3xl"></div>
+            
+            <div className="w-16 h-16 bg-[#d4af37]/20 rounded-full flex items-center justify-center mx-auto mb-6">
+              <Phone className="text-[#d4af37]" size={32} />
+            </div>
+
+            <span className="text-[#d4af37] font-royal tracking-[0.4em] text-xs uppercase block mb-3 font-bold">
+              HELP DESK
+            </span>
+            <h2 className="font-royal text-3xl md:text-4xl font-black text-white mb-4 tracking-widest uppercase">
+              CUSTOMER SUPPORT
+            </h2>
+            <p className="text-gray-400 font-light mb-8 max-w-md mx-auto leading-relaxed">
+              Need assistance with bookings or events? Contact our support team.
+            </p>
+
+            <div className="flex flex-col sm:flex-row justify-center items-center gap-6 md:gap-12">
+              <a
+                href="tel:+919676448018"
+                className="flex items-center gap-4 px-6 py-4 bg-white/5 border border-white/10 hover:border-[#d4af37] hover:bg-[#d4af37]/5 rounded-xl transition-all duration-300 group w-full sm:w-auto justify-center"
+              >
+                <div className="w-10 h-10 bg-[#d4af37]/10 rounded-lg flex items-center justify-center text-[#d4af37] group-hover:scale-110 transition-transform">
+                  <Phone size={18} />
+                </div>
+                <div className="text-left font-royal">
+                  <span className="block text-[10px] text-[#d4af37] uppercase tracking-widest font-bold">Call Support Line 1</span>
+                  <span className="font-mono font-bold text-white text-lg group-hover:text-[#d4af37] transition-colors">
+                    +91 9676448018
+                  </span>
+                </div>
+              </a>
+
+              <a
+                href="tel:+919392183105"
+                className="flex items-center gap-4 px-6 py-4 bg-white/5 border border-white/10 hover:border-[#d4af37] hover:bg-[#d4af37]/5 rounded-xl transition-all duration-300 group w-full sm:w-auto justify-center"
+              >
+                <div className="w-10 h-10 bg-[#d4af37]/10 rounded-lg flex items-center justify-center text-[#d4af37] group-hover:scale-110 transition-transform">
+                  <Phone size={18} />
+                </div>
+                <div className="text-left font-royal">
+                  <span className="block text-[10px] text-[#d4af37] uppercase tracking-widest font-bold">Call Support Line 2</span>
+                  <span className="font-mono font-bold text-white text-lg group-hover:text-[#d4af37] transition-colors">
+                    +91 9392183105
+                  </span>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
       </section>
     </div>

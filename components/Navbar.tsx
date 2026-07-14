@@ -29,7 +29,7 @@ const Navbar: React.FC<NavbarProps> = ({ isAdmin, onLogout }) => {
   };
 
   return (
-    <nav className="fixed w-full z-50 transition-all duration-300 bg-black/80 backdrop-blur-md border-b border-[#d4af37]/20">
+    <nav className="fixed w-full z-50 transition-all duration-300 bg-black/80 backdrop-blur-md border-b border-[#d4af37]/20 print:hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           <Link to="/" className="flex items-center gap-2 group">

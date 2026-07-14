@@ -85,7 +85,7 @@ const BookingPage: React.FC = () => {
 
   const totalPrice = useMemo(() => {
     if (!selectedRoom) return 0;
-    
+
     let price = selectedRoom.price;
     const totalMembers = formData.adults + formData.children;
 
@@ -232,6 +232,26 @@ const BookingPage: React.FC = () => {
   };
 
   if (step === 'success') {
+    // Calculate extra guest numbers and costs for breakdown
+    const extraGuestsCalc = () => {
+      if (!selectedRoom) return { extraAdults: 0, extraAdultCost: 0, extraChildren: 0, extraChildCost: 0 };
+      const totalMembers = formData.adults + formData.children;
+      if (totalMembers <= selectedRoom.basePackage) {
+        return { extraAdults: 0, extraAdultCost: 0, extraChildren: 0, extraChildCost: 0 };
+      }
+      const extraAdults = Math.max(0, formData.adults - selectedRoom.basePackage);
+      const remainingSlots = Math.max(0, selectedRoom.basePackage - formData.adults);
+      const extraChildren = Math.max(0, formData.children - remainingSlots);
+      return {
+        extraAdults,
+        extraAdultCost: extraAdults * selectedRoom.extraAdultCharge,
+        extraChildren,
+        extraChildCost: extraChildren * selectedRoom.extraChildCharge
+      };
+    };
+
+    const { extraAdults, extraAdultCost, extraChildren, extraChildCost } = extraGuestsCalc();
+
     return (
       <div className="min-h-screen pt-32 pb-20 px-4 flex items-center justify-center">
         <div className="max-w-2xl w-full">
@@ -252,15 +272,15 @@ const BookingPage: React.FC = () => {
               </p>
             </div>
 
-            <div className="bg-black/40 rounded-2xl border border-white/5 p-6 mb-8 space-y-4">
-              <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-4">
+            <div className="bg-black/40 rounded-2xl border border-white/5 p-6 mb-8 space-y-6">
+              <div className="flex justify-between items-center border-b border-white/10 pb-4 mb-2">
                 <span className="font-royal text-sm text-gray-400 uppercase tracking-widest">
                   Transaction ID
                 </span>
                 <span className="font-mono text-[#d4af37] font-bold">{bookingId}</span>
               </div>
 
-              <div className="grid grid-cols-2 gap-y-4">
+              <div className="grid grid-cols-2 gap-y-4 border-b border-white/10 pb-6">
                 <div>
                   <span className="block text-[10px] text-gray-500 uppercase tracking-widest mb-1">
                     Customer
@@ -282,14 +302,21 @@ const BookingPage: React.FC = () => {
                 </div>
                 <div className="text-right">
                   <span className="block text-[10px] text-gray-500 uppercase tracking-widest mb-1">
+                    Guests
+                  </span>
+                  <span className="block font-bold text-sm">
+                    Adults: {formData.adults} • Children: {formData.children}
+                  </span>
+                </div>
+                <div className="col-span-2">
+                  <span className="block text-[10px] text-gray-500 uppercase tracking-widest mb-1">
                     Payment Status
                   </span>
                   <span
-                    className={`inline-block px-2 py-1 text-[10px] rounded border font-bold ${
-                      paymentMethod === 'manual'
-                        ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
-                        : 'bg-green-500/10 text-green-500 border-green-500/20'
-                    }`}
+                    className={`inline-block px-2 py-1 text-[10px] rounded border font-bold ${paymentMethod === 'manual'
+                      ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
+                      : 'bg-green-500/10 text-green-500 border-green-500/20'
+                      }`}
                   >
                     {paymentMethod === 'manual'
                       ? 'PENDING VERIFICATION'
@@ -300,25 +327,83 @@ const BookingPage: React.FC = () => {
                 </div>
               </div>
 
+              {/* BOOKING SUMMARY */}
+              <div className="space-y-4">
+                <span className="text-[10px] font-royal text-[#d4af37] tracking-[0.2em] block uppercase font-bold text-center">
+                  BOOKING SUMMARY
+                </span>
+
+                <div className="space-y-3 text-sm">
+                  {/* Room Base Price */}
+                  <div className="flex justify-between items-end">
+                    <span className="text-gray-400 font-light">Room Base Price</span>
+                    <div className="flex-grow border-b border-dotted border-white/20 mx-2 mb-1"></div>
+                    <span className="text-white">₹{selectedRoom?.price.toLocaleString()}</span>
+                  </div>
+
+                  {/* Extra Guests Section */}
+                  <div className="space-y-2 pt-1">
+                    <span className="text-[10px] font-royal text-[#d4af37] tracking-[0.2em] block uppercase font-bold">
+                      Extra Guests
+                    </span>
+                    <div className="flex justify-between items-end pl-2">
+                      <span className="text-gray-400 font-light">Adults ({formData.adults})</span>
+                      <div className="flex-grow border-b border-dotted border-white/20 mx-2 mb-1"></div>
+                      <span className="text-white">₹{extraAdultCost.toLocaleString()}</span>
+                    </div>
+                    <div className="flex justify-between items-end pl-2">
+                      <span className="text-gray-400 font-light">Children ({formData.children})</span>
+                      <div className="flex-grow border-b border-dotted border-white/20 mx-2 mb-1"></div>
+                      <span className="text-white">₹{extraChildCost.toLocaleString()}</span>
+                    </div>
+                  </div>
+
+                  {/* Selected Add-ons Section */}
+                  <div className="space-y-2 pt-2">
+                    <span className="text-[10px] font-royal text-[#d4af37] tracking-[0.2em] block uppercase font-bold">
+                      Selected Add-ons
+                    </span>
+                    {formData.selectedAddons.length > 0 ? (
+                      formData.selectedAddons.map(id => {
+                        const addon = ADDONS.find(a => a.id === id);
+                        return (
+                          <div key={id} className="flex justify-between items-end pl-2">
+                            <span className="text-gray-400 font-light">{addon?.name}</span>
+                            <div className="flex-grow border-b border-dotted border-white/20 mx-2 mb-1"></div>
+                            <span className="text-white">₹{addon?.price.toLocaleString()}</span>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-xs text-gray-500 italic pl-2">No add-ons selected</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Totals Section */}
               <div className="pt-6 border-t border-white/10 space-y-2">
-                <div className="flex justify-between text-sm">
+                <div className="flex justify-between items-end text-sm">
                   <span className="text-gray-400">Total Booking Price</span>
+                  <div className="flex-grow border-b border-dotted border-white/20 mx-2 mb-1"></div>
                   <span>₹{totalPrice.toLocaleString()}</span>
                 </div>
-                <div className="flex justify-between text-lg font-bold">
+                <div className="flex justify-between items-end text-lg font-bold">
                   <span className="gold-gradient uppercase font-royal">Amount Paid Now</span>
+                  <div className="flex-grow border-b border-dotted border-[#d4af37]/30 mx-2 mb-1"></div>
                   <span className="gold-gradient">₹{amountToPayNow.toLocaleString()}</span>
                 </div>
                 {paymentOption === 'half' && (
-                  <div className="flex justify-between text-sm text-[#d4af37] pt-2 italic">
+                  <div className="flex justify-between items-end text-sm text-[#d4af37] pt-2 italic">
                     <span>Balance Due on Visit</span>
+                    <div className="flex-grow border-b border-dotted border-[#d4af37]/30 mx-2 mb-1"></div>
                     <span>₹{(totalPrice - amountToPayNow).toLocaleString()}</span>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-2 gap-4 print:hidden">
               <button
                 onClick={() => window.print()}
                 className="flex items-center justify-center gap-2 py-4 border border-white/10 rounded-xl hover:bg-white/5 transition-all font-royal text-sm font-bold uppercase tracking-widest"
@@ -366,34 +451,31 @@ const BookingPage: React.FC = () => {
                 <div className="flex gap-4 mb-8">
                   <button
                     onClick={() => setPaymentMethod('online')}
-                    className={`flex-1 py-3 rounded-xl border-2 font-royal text-[10px] font-bold tracking-widest transition-all ${
-                      paymentMethod === 'online'
-                        ? 'border-[#d4af37] bg-[#d4af37]/10 text-[#d4af37]'
-                        : 'border-white/10 text-gray-500 hover:border-white/20'
-                    }`}
+                    className={`flex-1 py-3 rounded-xl border-2 font-royal text-[10px] font-bold tracking-widest transition-all ${paymentMethod === 'online'
+                      ? 'border-[#d4af37] bg-[#d4af37]/10 text-[#d4af37]'
+                      : 'border-white/10 text-gray-500 hover:border-white/20'
+                      }`}
                   >
                     ONLINE (QR/UPI)
                   </button>
                   <button
                     onClick={() => setPaymentMethod('manual')}
-                    className={`flex-1 py-3 rounded-xl border-2 font-royal text-[10px] font-bold tracking-widest transition-all ${
-                      paymentMethod === 'manual'
-                        ? 'border-[#d4af37] bg-[#d4af37]/10 text-[#d4af37]'
-                        : 'border-white/10 text-gray-500 hover:border-white/20'
-                    }`}
+                    className={`flex-1 py-3 rounded-xl border-2 font-royal text-[10px] font-bold tracking-widest transition-all ${paymentMethod === 'manual'
+                      ? 'border-[#d4af37] bg-[#d4af37]/10 text-[#d4af37]'
+                      : 'border-white/10 text-gray-500 hover:border-white/20'
+                      }`}
                   >
-                    MANUAL (GOOGLE FORM)
+                    MANUAL PAY (PAY VIA Google Form)
                   </button>
                 </div>
 
                 <div className="space-y-4">
                   <button
                     onClick={() => setPaymentOption('full')}
-                    className={`w-full p-6 rounded-2xl border-2 text-left transition-all ${
-                      paymentOption === 'full'
-                        ? 'border-[#d4af37] bg-[#d4af37]/5'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
+                    className={`w-full p-6 rounded-2xl border-2 text-left transition-all ${paymentOption === 'full'
+                      ? 'border-[#d4af37] bg-[#d4af37]/5'
+                      : 'border-white/10 hover:border-white/20'
+                      }`}
                   >
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-royal font-bold tracking-widest">
@@ -417,11 +499,10 @@ const BookingPage: React.FC = () => {
 
                   <button
                     onClick={() => setPaymentOption('half')}
-                    className={`w-full p-6 rounded-2xl border-2 text-left transition-all ${
-                      paymentOption === 'half'
-                        ? 'border-[#d4af37] bg-[#d4af37]/5'
-                        : 'border-white/10 hover:border-white/20'
-                    }`}
+                    className={`w-full p-6 rounded-2xl border-2 text-left transition-all ${paymentOption === 'half'
+                      ? 'border-[#d4af37] bg-[#d4af37]/5'
+                      : 'border-white/10 hover:border-white/20'
+                      }`}
                   >
                     <div className="flex justify-between items-center mb-2">
                       <span className="font-royal font-bold tracking-widest">
@@ -511,11 +592,10 @@ const BookingPage: React.FC = () => {
                       <button
                         onClick={handleFinalSubmit}
                         disabled={isSubmitting}
-                        className={`w-full py-5 bg-gradient-to-r from-[#bf953f] to-[#aa771c] text-black font-royal font-black text-xl tracking-[0.2em] rounded-2xl transition-all duration-300 transform ${
-                          isSubmitting
-                            ? 'opacity-70 scale-95'
-                            : 'hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(191,149,63,0.3)]'
-                        }`}
+                        className={`w-full py-5 bg-gradient-to-r from-[#bf953f] to-[#aa771c] text-black font-royal font-black text-xl tracking-[0.2em] rounded-2xl transition-all duration-300 transform ${isSubmitting
+                          ? 'opacity-70 scale-95'
+                          : 'hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(191,149,63,0.3)]'
+                          }`}
                       >
                         {isSubmitting ? 'PROCESSING...' : 'PAY NOW'}
                       </button>
@@ -567,11 +647,10 @@ const BookingPage: React.FC = () => {
                     <button
                       onClick={handleFinalSubmit}
                       disabled={isSubmitting}
-                      className={`w-full py-5 bg-gradient-to-r from-[#bf953f] to-[#aa771c] text-black font-royal font-black text-xl tracking-[0.2em] rounded-2xl transition-all duration-300 transform ${
-                        isSubmitting
-                          ? 'opacity-70 scale-95'
-                          : 'hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(191,149,63,0.3)]'
-                      }`}
+                      className={`w-full py-5 bg-gradient-to-r from-[#bf953f] to-[#aa771c] text-black font-royal font-black text-xl tracking-[0.2em] rounded-2xl transition-all duration-300 transform ${isSubmitting
+                        ? 'opacity-70 scale-95'
+                        : 'hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(191,149,63,0.3)]'
+                        }`}
                     >
                       {isSubmitting ? 'SUBMITTING...' : 'I HAVE SUBMITTED THE FORM'}
                     </button>
@@ -836,11 +915,10 @@ const BookingPage: React.FC = () => {
                     key={addon.id}
                     type="button"
                     onClick={() => toggleAddon(addon.id)}
-                    className={`p-4 rounded-xl border-2 transition-all text-left flex flex-col justify-between h-32 ${
-                      formData.selectedAddons.includes(addon.id)
-                        ? 'bg-[#d4af37]/10 border-[#d4af37]'
-                        : 'bg-black/40 border-white/5 hover:border-white/20'
-                    }`}
+                    className={`p-4 rounded-xl border-2 transition-all text-left flex flex-col justify-between h-32 ${formData.selectedAddons.includes(addon.id)
+                      ? 'bg-[#d4af37]/10 border-[#d4af37]'
+                      : 'bg-black/40 border-white/5 hover:border-white/20'
+                      }`}
                   >
                     <div>
                       <span className="block font-bold text-sm mb-1 uppercase tracking-widest">

@@ -111,7 +111,7 @@ function App() {
             />
           </Routes>
 
-          <footer className="py-12 px-6 border-t border-[#d4af37]/30 bg-black/50 text-center">
+          <footer className="py-12 px-6 border-t border-[#d4af37]/30 bg-black/50 text-center print:hidden">
             <div className="max-w-7xl mx-auto flex flex-col items-center gap-6">
               <div className="flex items-center gap-2 mb-2">
                 <Crown className="text-[#d4af37] w-8 h-8" />

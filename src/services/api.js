@@ -9,7 +9,7 @@ class APIClient {
   async request(endpoint, options = {}) {
     const url = `${this.baseURL}${endpoint}`;
     const token = typeof localStorage !== 'undefined' ? localStorage.getItem('admin_token') : null;
-    
+
     const headers = {
       'Content-Type': 'application/json',
       ...options.headers,
@@ -52,28 +52,52 @@ class APIClient {
               data: {
                 rooms: [
                   {
-                    roomId: 'mock-1',
-                    name: 'Royal Heritage Chamber',
-                    image: 'https://images.unsplash.com/photo-1513694203232-719a280e022f?q=80&w=2069&auto=format&fit=crop',
-                    price: 2500,
-                    basePackage: 2,
-                    maxCapacity: 10,
-                    extraAdultCharge: 500,
-                    extraChildCharge: 300,
-                    description: 'Experience absolute royalty in our premium soundproof chamber with 4k Dolby Atmos.',
-                    isActive: true
+                    roomId: 'salaar-studio',
+                    name: 'The Salaar Studio',
+                    image: 'https://known-scarlet-3cqffaookw.edgeone.app/salaar%20studio.jpeg',
+                    price: 4999,
+                    basePackage: 6,
+                    maxCapacity: 80,
+                    extraAdultCharge: 299,
+                    extraChildCharge: 199,
+                    description: 'Premium studio-style private theatre perfect for group celebrations and friends gatherings.',
+                    amenities: ['ac', 'projector', 'sound-system', 'lighting', 'seating']
                   },
                   {
-                    roomId: 'mock-2',
-                    name: 'Intimate Elite',
-                    image: 'https://images.unsplash.com/photo-1540555700478-4be289fbecef?q=80&w=2070&auto=format&fit=crop',
-                    price: 1800,
+                    roomId: 'hitman-show',
+                    name: 'The Hitman Show',
+                    image: 'https://written-copper-gfevwqnna5.edgeone.app/hitman%20show.jpeg',
+                    price: 2999,
+                    basePackage: 4,
+                    maxCapacity: 50,
+                    extraAdultCharge: 199,
+                    extraChildCharge: 99,
+                    description: 'Best for small events and surprise celebrations.',
+                    amenities: ['ac', 'projector', 'sound-system', 'lighting']
+                  },
+                  {
+                    roomId: 'chhatrapathi-darbhar',
+                    name: 'The Chhatrapathi Shivaji Darbhar',
+                    image: 'https://elated-orange-0m2jps3egw.edgeone.app/shivaji%20darbar.jpeg',
+                    price: 14999,
+                    basePackage: 35,
+                    maxCapacity: 100,
+                    extraAdultCharge: 99,
+                    extraChildCharge: 99,
+                    description: 'Grand royal celebration hall ideal for big birthdays and large gatherings.',
+                    amenities: ['ac', 'projector', 'sound-system', 'lighting', 'seating', 'decoration']
+                  },
+                  {
+                    roomId: 'radhakrishna-bliss',
+                    name: 'Radhakrishna Bliss',
+                    image: 'https://personal-crimson-wconsktrqu.edgeone.app/radhakrishna%20bliss.jpeg',
+                    price: 1499,
                     basePackage: 2,
                     maxCapacity: 6,
-                    extraAdultCharge: 400,
-                    extraChildCharge: 200,
-                    description: 'Perfect for couples. Cozy and deeply atmospheric with a massive display.',
-                    isActive: true
+                    extraAdultCharge: 199,
+                    extraChildCharge: 99,
+                    description: 'Romantic couple-exclusive theatre designed for special moments.',
+                    amenities: ['ac', 'projector', 'sound-system', 'lighting', 'seating']
                   }
                 ]
               }

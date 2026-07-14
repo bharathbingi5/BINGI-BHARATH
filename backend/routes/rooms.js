@@ -1,6 +1,7 @@
 import express from 'express';
 import { body, validationResult } from 'express-validator';
 import Room from '../models/Room.js';
+import Booking from '../models/Booking.js';
 import { protect, authorize } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -214,7 +215,7 @@ router.get('/availability/:date', async (req, res) => {
         }).select('timeSlot');
 
         const bookedSlots = bookings.map(b => b.timeSlot);
-        const allSlots = ["10:00 AM - 01:00 PM","11:00 AM - 02:00 PM","12:00 PM - 03:00 PM","1:00 AM-4:00 PM","01:30 PM - 04:30 PM","02:00 PM - 05:00 PM","03:00 PM - 06:00 PM","4:00 PM - 07:00 PM", "08:30 PM - 11:30 PM"];
+        const allSlots = ["10:00 AM - 01:00 PM", "11:00 AM - 02:00 PM", "12:00 PM - 03:00 PM", "1:00 AM-4:00 PM", "01:30 PM - 04:30 PM", "02:00 PM - 05:00 PM", "03:00 PM - 06:00 PM", "4:00 PM - 07:00 PM", "08:30 PM - 11:30 PM"];
 
         return {
           roomId: room.roomId,
